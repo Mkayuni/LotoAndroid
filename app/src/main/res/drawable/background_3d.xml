@@ -1,0 +1,18 @@
+<!-- background_3d.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" /> <!-- Base color (white) -->
+        </shape>
+    </item>
+    <item android:right="2dp" android:bottom="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#E6E6E6" /> <!-- Lighter shade for top and left sides -->
+        </shape>
+    </item>
+    <item android:left="2dp" android:top="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#F3103379" /> <!-- Darker shade for bottom and right sides -->
+        </shape>
+    </item>
+</layer-list>

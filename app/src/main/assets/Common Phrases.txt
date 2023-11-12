@@ -1,0 +1,83 @@
+English,Chichewa
+Welcome,Zikomo
+Hello (General greeting),Moni
+hello all of you,Moni onse 
+Hello (on phone),halo
+How are you?,Muli bwanji?
+Reply to 'How are you?',"Zikomo, kaya inu?"
+Reply to 'How are you?',"Ndiri bwino, kaya inu?"
+Reply to 'How are you?',"Ndiri bwino, kaya anzathu?"
+Long time no see,Papita thawi tisanaonane
+What's your name?,Dzina lanu ndani?
+What's your name?,Dzina lanu ndi yani?
+My name is ...,Dzina langa ndi ...
+Where are you from?,Mumachokera kuti?
+I'm from ...,Ndimachokera ku ...
+Pleased to meet you,Ndakondwera kukudziwani
+Good morning,Mwauka bwanji?
+Morning greeting,Mwadzuka bwanji?
+Morning greeting Reply,Ndadzuka bwino 
+Good afternoon,Mwaswela bwanji?
+(Afternoon greeting),Ndaswela bwin 
+Good evening,Mwachoma bwanji
+(Evening greeting),Ndachoma bwino 
+Good night,Usiku wabwino
+Sleep well,Gonani bwino 
+Sleep well,Mugone bwino
+I am going,Ndapita 
+Go well,Yendani bwino
+Stay well,Tsalani bwino 
+Go well,Pitani bwino
+See you later,Tionana 
+See you tomorrow,Tionana mawa 
+Good luck!,Mafuna abwino
+Have a nice day,Mukhale ndi tsiku labwino
+Bon appetit /,Chakudya Chabwino
+Have a nice meal,Chakudya Chabwino
+Bon voyage /,Yendani bwino
+Have a good journey,Muyende bwino
+Yes,Ee
+Yes,Eya
+Yes,Inde
+No,Iyayi
+No,Ayi
+Maybe,Kapena
+I don't know,Sindidziwa
+I understand,Ndamvetsetsa
+I don't understand,Sindikumvetsa
+Please speak more slowly,Chonde lankhulani pangono pangono
+Please say that again,Chonde mwati bwanji
+Please write it down,Chonde lembani
+Do you speak English?,Mumalankhula chizungu?
+Do you speak English?,Mumalankhula chingelesi?
+Do you speak Chichewa?,Mumalankhula chiche?a?
+"Yes, a little","Eya, pangono"
+I'm learning Chichewa,Ndikuphunzira Chichewa
+Speak to me in Chichewa,Ndilankhuleni mu Chichewa
+How do you say ... in Chichewa?,Mumati chiyani ... mu Chichewa?
+Excuse me,Pepani
+How much is this?,Ndalama zingati?
+Sorry,Pepani
+Please,Chonde
+Thank you,Zikomo
+Where's the toilet / bathroom?,Chimbudzi chili kuti?
+This gentleman will pay for everything,Mbambo uyu alipila zonse
+This lady will pay for everything,Mzimayi uyu alipila zonse
+Would you like to dance with me?,Ungafune kuvina ndi ine?
+I miss you,Ndakusowa
+I love you,Ndimakukondani
+I love you too,Ndimakukondaninso
+Get well soon,Pezanibwino mwa msanga
+Go away!,Choka!
+Leave me alone!,Ndilekeni!
+Leave me alone!,Ndisiyeni!
+Help me!,Mundithandize!
+Help!,Ndithadizeni
+Fire!,Moto!
+Stop!,Ima!
+Call the police!,Itanani a police!
+Christmas greetings,Sangalalani pa Khirisimasi
+New Year greetings,Chaka chatsopano
+Birthday greetings,Sangalalani pa tsiku la chibadwi chanu 
+Congratulations!,Mwachita bwino!
+One language is never enough,Chilankhulo chimodzi sichokwanila

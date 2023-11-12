@@ -1,0 +1,16 @@
+<!-- res/layout/splash_screen.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/splash_background_color">
+
+    <!-- Use your app's image as the splash screen background -->
+    <ImageView
+        android:id="@+id/splashImage"
+        android:layout_width="337dp"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/splash_image_description"
+        android:src="@drawable/splash_background" />
+
+    <!-- You can add a loading progress bar or text if needed -->
+</RelativeLayout>

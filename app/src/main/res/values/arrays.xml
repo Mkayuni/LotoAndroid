@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/values/arrays.xml -->
+<resources>
+    <string-array name="categories">
+        <item>Animals</item>
+        <item>Common Phrases</item>
+        <item>Common Words</item>
+    </string-array>
+</resources>
+

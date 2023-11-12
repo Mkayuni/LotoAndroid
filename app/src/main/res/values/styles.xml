@@ -1,0 +1,13 @@
+<!-- res/values/styles.xml -->
+<resources>
+    <!-- Your existing app theme -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your app's theme here -->
+        <!-- ... -->
+    </style>
+
+    <!-- Define a theme for the splash screen -->
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
+</resources>
