@@ -21,6 +21,11 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.widget.Button;
 import android.view.View;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
@@ -36,12 +41,34 @@ public class MainActivity extends AppCompatActivity {
     private Runnable countdownRunnable; // Variable to track countdown
     MediaPlayer tickPlayer;
     private Button skipButton;
+    private SensorManager sensorManager;
+    private Sensor accelerometerSensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loto);
 
+        // Initialize SensorManager and accelerometerSensor
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        // Register SensorEventListener for tilt detection
+        sensorManager.registerListener(new SensorEventListener() {
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                float zValue = event.values[2];
+                // Check if the phone is tilted downwards (negative z-axis)
+                if (zValue < -9.0f) {
+                    onSkip();
+                }
+            }
+
+            @Override
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+                // Not needed for this example
+            }
+        }, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
         gameHandler = new Handler();
         wordPairTextView = findViewById(R.id.wordPairTextView);
@@ -52,8 +79,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize the MediaPlayer for the tick-tock sound
         tickPlayer = MediaPlayer.create(this, R.raw.ticktock);
-        ;
     }
+    private void onSkip() {
+        if (inGameMode) {
+            loadAndDisplayWordPairs(selectedCategory, landscapeWordPairTextView);
+        }
+    }
+
 
     private void setCategoryImageClickListeners() {
         int orientation = getResources().getConfiguration().orientation;
@@ -114,16 +146,6 @@ public class MainActivity extends AppCompatActivity {
         landscapeWordPairTextView = findViewById(R.id.landscapeWordPairTextView);
         countdownTextView = findViewById(R.id.countdownTextView);
 
-        // Find the skipButton
-        skipButton = findViewById(R.id.skipButton);
-        // Set an OnClickListener for the skipButton
-        skipButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onSkipButtonClick();
-            }
-        });
-
         if (landscapeWordPairTextView != null && countdownTextView != null) {
             loadAndDisplayWordPairs(selectedCategory, landscapeWordPairTextView);
             countdownSeconds = 30;
@@ -134,11 +156,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void onSkipButtonClick() {
-        if (inGameMode) {
-            loadAndDisplayWordPairs(selectedCategory, landscapeWordPairTextView);
-        }
-    }
     private void loadAndDisplayWordPairs(String selectedCategory, TextView targetTextView) {
         List<String> englishWords = new ArrayList<>();
         List<String> chichewaWords = new ArrayList<>();
