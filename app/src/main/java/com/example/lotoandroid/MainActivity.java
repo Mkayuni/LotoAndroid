@@ -86,30 +86,51 @@ public class MainActivity extends AppCompatActivity {
 
         int orientation = getResources().getConfiguration().orientation;
         Log.d(TAG, "Orientation: " + orientation);
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Log.d(TAG, "Switching to landscape layout");
-            setContentView(R.layout.landscape_text_display);
-            landscapeWordPairTextView = findViewById(R.id.landscapeWordPairTextView);
-            countdownTextView = findViewById(R.id.countdownTextView);
 
-            // Find the skipButton
-            skipButton = findViewById(R.id.skipButton);
-            // Set an OnClickListener for the skipButton
-            skipButton.setOnClickListener(new View.OnClickListener() {
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            // Show the prompt layout
+            Log.d(TAG, "Switching to prompt layout");
+            setContentView(R.layout.prompt_layout);
+
+            // Listen for a click on the prompt layout
+            findViewById(android.R.id.content).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    onSkipButtonClick();
+                public void onClick(View v) {
+                    // User acknowledged the prompt, switch to the landscape layout
+                    Log.d(TAG, "Prompt acknowledged, switching to landscape layout");
+                    switchToLandscapeLayout();
                 }
             });
+        } else {
+            // Device is already in landscape mode or using a layout that works in portrait
+            Log.d(TAG, "Switching directly to landscape layout");
+            switchToLandscapeLayout();
+        }
+    }
 
-            if (landscapeWordPairTextView != null && countdownTextView != null) {
-                loadAndDisplayWordPairs(selectedCategory, landscapeWordPairTextView);
-                countdownSeconds = 30;
-                startGameCountdown();
-            } else {
-                // Handle the case where views are not properly initialized
-                Log.e(TAG, "landscapeWordPairTextView or countdownTextView is null.");
+    private void switchToLandscapeLayout() {
+        Log.d(TAG, "Switching to landscape layout");
+        setContentView(R.layout.landscape_text_display);
+        landscapeWordPairTextView = findViewById(R.id.landscapeWordPairTextView);
+        countdownTextView = findViewById(R.id.countdownTextView);
+
+        // Find the skipButton
+        skipButton = findViewById(R.id.skipButton);
+        // Set an OnClickListener for the skipButton
+        skipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSkipButtonClick();
             }
+        });
+
+        if (landscapeWordPairTextView != null && countdownTextView != null) {
+            loadAndDisplayWordPairs(selectedCategory, landscapeWordPairTextView);
+            countdownSeconds = 30;
+            startGameCountdown();
+        } else {
+            // Handle the case where views are not properly initialized
+            Log.e(TAG, "landscapeWordPairTextView or countdownTextView is null.");
         }
     }
 
@@ -148,19 +169,14 @@ public class MainActivity extends AppCompatActivity {
                 countdownTextView.setText(String.valueOf(countdownSeconds));
 
                 if (countdownSeconds <= 0) {
-                    if (tickPlayer != null) {
-                        tickPlayer.stop();
-                        tickPlayer.release();
-                    }
+                    stopTickPlayer();
                     displayGameOverAndReturnToCategorySelection();
                 } else {
                     gameHandler.postDelayed(countdownRunnable, COUNTDOWN_INTERVAL);
                     Log.d(TAG, "Countdown: " + countdownSeconds);
 
                     // Play tick-tock sound when the countdown is running
-                    if (tickPlayer != null && !tickPlayer.isPlaying()) {
-                        tickPlayer.start();
-                    }
+                    playTickPlayer();
 
                     // Check if there are 5 seconds or less left
                     if (countdownSeconds <= 5) {
@@ -173,10 +189,22 @@ public class MainActivity extends AppCompatActivity {
         gameHandler.postDelayed(countdownRunnable, COUNTDOWN_INTERVAL);
     }
 
-    private void speedUpTickPlayer() {
+    private void playTickPlayer() {
         if (tickPlayer != null && !tickPlayer.isPlaying()) {
             tickPlayer.start();
         }
+    }
+
+    private void stopTickPlayer() {
+        if (tickPlayer != null) {
+            tickPlayer.stop();
+            tickPlayer.release();
+            tickPlayer = null;
+        }
+    }
+
+    private void speedUpTickPlayer() {
+        playTickPlayer();
     }
     private void displayGameOverAndReturnToCategorySelection() {
         // Display "Game Over" using the string resource

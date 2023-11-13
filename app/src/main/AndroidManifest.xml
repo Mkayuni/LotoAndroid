@@ -37,8 +37,8 @@
 
         <!-- Add a new activity for the LOTO activity -->
         <activity
-            android:name=".LOTO"
-            android:screenOrientation="sensorLandscape"/>
+            android:name=".LOTO"/>
+
 
     </application>
 </manifest>

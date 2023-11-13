@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.pm.ActivityInfo;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,6 +41,13 @@ public class LOTO extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Check the current orientation and set it to landscape if needed
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+
         setContentView(R.layout.landscape_text_display);
 
         wordPairTextView = findViewById(R.id.landscapeWordPairTextView);
