@@ -82,7 +82,14 @@ public class MainActivity extends AppCompatActivity {
     }
     private void onSkip() {
         if (inGameMode) {
-            loadAndDisplayWordPairs(selectedCategory, landscapeWordPairTextView);
+            // Show flash card saying "Correct"
+            landscapeWordPairTextView.setText("CORRECT");
+
+            // Delay for a short duration (e.g., 1000 milliseconds) to display "Correct"
+            gameHandler.postDelayed(() -> {
+                // Load and display the next word pair
+                loadAndDisplayWordPairs(selectedCategory, landscapeWordPairTextView);
+            }, 500); // Delay
         }
     }
 
