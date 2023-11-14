@@ -45,6 +45,44 @@ public class MainActivity extends AppCompatActivity {
     private Sensor accelerometerSensor;
     private List<String> skippedWords = new ArrayList<>();
 
+    // Declare the SensorEventListener as a member variable
+    private SensorEventListener sensorEventListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            float zValue = event.values[2];
+
+            // Log the zValue for debugging purposes
+            Log.d(TAG, "Z-axis value: " + zValue);
+
+            // Check if the phone is tilted downwards (negative z-axis)
+            if (zValue < -9.0f) {
+                onSkip();
+            } else if (zValue > 9.0f) {
+                // Check if the phone is tilted upwards (positive z-axis)
+                onSkipUpwards();
+            }
+        }
+
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            // Log the accuracy change for debugging purposes
+            Log.d(TAG, "Accuracy changed for sensor: " + sensor.getName() + ", Accuracy: " + accuracy);
+            // Not needed for this example
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Unregister the sensorEventListener to avoid memory leaks
+        if (sensorManager != null && sensorEventListener != null) {
+            sensorManager.unregisterListener(sensorEventListener);
+        }
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,24 +92,13 @@ public class MainActivity extends AppCompatActivity {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-        // Register SensorEventListener for tilt detection
-        sensorManager.registerListener(new SensorEventListener() {
-            public void onSensorChanged(SensorEvent event) {
-                float zValue = event.values[2];
-                // Check if the phone is tilted downwards (negative z-axis)
-                if (zValue < -9.0f) {
-                    onSkip();
-                } else if (zValue > 9.0f) {
-                    // Check if the phone is tilted upwards (positive z-axis)
-                    onSkipUpwards();
-                }
-            }
-
-            @Override
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-                // Not needed for this example
-            }
-        }, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        if (sensorManager != null && accelerometerSensor != null) {
+            // Register SensorEventListener for tilt detection
+            sensorManager.registerListener(sensorEventListener, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        } else {
+            // Log an error if either sensorManager or accelerometerSensor is null
+            Log.e(TAG, "SensorManager or accelerometerSensor is null");
+        }
 
         gameHandler = new Handler();
         wordPairTextView = findViewById(R.id.wordPairTextView);
@@ -89,10 +116,16 @@ public class MainActivity extends AppCompatActivity {
             // Show flash card saying "Correct"
             landscapeWordPairTextView.setText("CORRECT");
 
-            // Delay for a short duration (e.g., 1000 milliseconds) to display "Correct"
+            // Log that "Correct" is being displayed
+            Log.d(TAG, "Word pair set to CORRECT");
+
+            // Delay for a short duration
             gameHandler.postDelayed(() -> {
                 // Load and display the next word pair
-                loadAndDisplayWordPairs(selectedCategory, landscapeWordPairTextView);
+                String displayedWordPair = loadAndDisplayWordPairs(selectedCategory, landscapeWordPairTextView);
+
+                // Log the displayed word pair
+                Log.d(TAG, "Displayed word pair: " + displayedWordPair);
             }, 500); // Delay
         }
     }
@@ -120,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
     private void setCategoryImageClickListeners() {
         int orientation = getResources().getConfiguration().orientation;
@@ -264,6 +296,11 @@ public class MainActivity extends AppCompatActivity {
         // Display "Game Over" using the string resource
         landscapeWordPairTextView.setText(R.string.game_over);
 
+        // Unregister the SensorEventListener to stop tilt detection
+        if (sensorManager != null) {
+            sensorManager.unregisterListener(sensorEventListener);
+        }
+
         // Display skipped words for 8 seconds
         if (!skippedWords.isEmpty()) {
             gameHandler.postDelayed(() -> {
@@ -284,8 +321,8 @@ public class MainActivity extends AppCompatActivity {
                     // Transition back to category selection
                     Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
-                }, 10000); // Delay for 2 seconds (2000 milliseconds) before returning to category selection
-            }, 2000); // Delay for 8 seconds (8000 milliseconds) before displaying skipped words
+                }, 10000); // Delay for 10 seconds before returning to category selection
+            }, 2000); // Delay for 8 seconds before displaying skipped words
         } else {
             // No skipped words, reset the game and start a new one
             gameHandler.postDelayed(() -> {
@@ -294,7 +331,7 @@ public class MainActivity extends AppCompatActivity {
                 // Transition back to category selection
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
-            }, 10000); // Delay for 2 seconds (2000 milliseconds) before returning to category selection
+            }, 10000); // Delay for 10 seconds before returning to category selection
         }
     }
 
