@@ -2,6 +2,7 @@ package com.example.lotoandroid;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Spannable;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +27,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import androidx.core.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.style.TextAppearanceSpan;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
@@ -113,11 +117,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSkip() {
         if (inGameMode) {
-            // Show flash card saying "Correct"
-            landscapeWordPairTextView.setText("CORRECT");
+            // Show flash card saying "Correct" with the style applied
+            String correctMessage = getString(R.string.correct_message);
+
+            // Create a SpannableString to apply style only to the "Correct" part
+            SpannableString spannableString = new SpannableString(correctMessage);
+            spannableString.setSpan(new TextAppearanceSpan(this, R.style.CorrectMessage), 0, correctMessage.length(), 0);
+
+            // Set the SpannableString to the TextView
+            landscapeWordPairTextView.setText(spannableString);
 
             // Log that "Correct" is being displayed
-            Log.d(TAG, "Word pair set to CORRECT");
+            Log.d(TAG, "Word pair set to " + correctMessage);
 
             // Delay for a short duration
             gameHandler.postDelayed(() -> {
@@ -135,10 +146,16 @@ public class MainActivity extends AppCompatActivity {
             // Check if landscapeWordPairTextView is not null before using it
             if (landscapeWordPairTextView != null) {
                 // Show flash card saying "SKIP" for upward tilt
-                landscapeWordPairTextView.setText("SKIP");
+                String skipMessage = getString(R.string.skip_message);
+                SpannableString spannableString = new SpannableString(skipMessage);
+
+                // Apply style only to the "SKIP" part
+                spannableString.setSpan(new TextAppearanceSpan(this, R.style.SkipMessage), 0, skipMessage.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                landscapeWordPairTextView.setText(spannableString);
 
                 // Log to confirm that "SKIP" is set
-                Log.d(TAG, "Word pair set to SKIP");
+                Log.d(TAG, "Word pair set to " + skipMessage);
 
                 // Delay for a short duration (e.g., 1000 milliseconds) to display "SKIP"
                 gameHandler.postDelayed(() -> {
@@ -153,6 +170,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+
 
     private void setCategoryImageClickListeners() {
         int orientation = getResources().getConfiguration().orientation;

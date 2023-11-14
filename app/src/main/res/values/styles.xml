@@ -6,6 +6,18 @@
         <!-- ... -->
     </style>
 
+    <!-- Define a style for the "CorrectMessage" -->
+    <style name="CorrectMessage">
+        <item name="android:textColor">@color/correct_color</item>
+        <item name="android:textSize">@dimen/correct_size</item>
+    </style>
+
+    <!-- Define a style for the "SkipMessage" -->
+    <style name="SkipMessage">
+        <item name="android:textColor">@color/skip_color</item>
+        <item name="android:textSize">@dimen/skip_size</item>
+    </style>
+
     <!-- Define a theme for the splash screen -->
     <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_background</item>
