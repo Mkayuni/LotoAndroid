@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private Button skipButton;
     private SensorManager sensorManager;
     private Sensor accelerometerSensor;
+    private List<String> skippedWords = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize the MediaPlayer for the tick-tock sound
         tickPlayer = MediaPlayer.create(this, R.raw.ticktock);
     }
+
     private void onSkip() {
         if (inGameMode) {
             // Show flash card saying "Correct"
@@ -108,7 +110,9 @@ public class MainActivity extends AppCompatActivity {
                 // Delay for a short duration (e.g., 1000 milliseconds) to display "SKIP"
                 gameHandler.postDelayed(() -> {
                     // Load and display the next word pair
-                    loadAndDisplayWordPairs(selectedCategory, landscapeWordPairTextView);
+                    String skippedWordPair = loadAndDisplayWordPairs(selectedCategory, landscapeWordPairTextView);
+                    // Store the skipped word pair
+                    skippedWords.add(skippedWordPair);
                 }, 500); // Delay
             } else {
                 // Log an error if landscapeWordPairTextView is null
@@ -187,14 +191,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadAndDisplayWordPairs(String selectedCategory, TextView targetTextView) {
+    private String loadAndDisplayWordPairs(String selectedCategory, TextView targetTextView) {
         List<String> englishWords = new ArrayList<>();
         List<String> chichewaWords = new ArrayList<>();
         loadWordsForCategory(selectedCategory, englishWords, chichewaWords);
 
         Log.d(TAG, "Loaded " + englishWords.size() + " English Words and " + chichewaWords.size() + " Chichewa words for category " + selectedCategory);
 
-        displayRandomWordPair(englishWords, chichewaWords, targetTextView);
+        // Return the displayed word pair
+        return displayRandomWordPair(englishWords, chichewaWords, targetTextView);
     }
 
     private void resetAndStartNewGame() {
@@ -254,18 +259,43 @@ public class MainActivity extends AppCompatActivity {
     private void speedUpTickPlayer() {
         playTickPlayer();
     }
+
     private void displayGameOverAndReturnToCategorySelection() {
         // Display "Game Over" using the string resource
         landscapeWordPairTextView.setText(R.string.game_over);
 
-        // Delay for a moment before returning to the category selection
-        gameHandler.postDelayed(() -> {
-            // Reset the game and start a new one
-            resetAndStartNewGame();
-            // Transition back to category selection
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-        }, 2000); // Delay for 2 seconds (2000 milliseconds) before returning to category selection
+        // Display skipped words for 8 seconds
+        if (!skippedWords.isEmpty()) {
+            gameHandler.postDelayed(() -> {
+                // Concatenate all skipped words into a single string
+                StringBuilder skippedWordsText = new StringBuilder();
+                for (String skippedWord : skippedWords) {
+                    skippedWordsText.append(skippedWord).append("\n");
+                }
+
+                // Display all skipped words at once
+                landscapeWordPairTextView.setText(skippedWordsText.toString());
+
+                // Delay for a moment before resetting the game and returning to category selection
+                gameHandler.postDelayed(() -> {
+                    // Reset the game and start a new one
+                    resetAndStartNewGame();
+
+                    // Transition back to category selection
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                }, 10000); // Delay for 2 seconds (2000 milliseconds) before returning to category selection
+            }, 2000); // Delay for 8 seconds (8000 milliseconds) before displaying skipped words
+        } else {
+            // No skipped words, reset the game and start a new one
+            gameHandler.postDelayed(() -> {
+                resetAndStartNewGame();
+
+                // Transition back to category selection
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            }, 10000); // Delay for 2 seconds (2000 milliseconds) before returning to category selection
+        }
     }
 
     private void loadWordsForCategory(String category, List<String> englishWords, List<String> chichewaWords) {
@@ -291,11 +321,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void displayRandomWordPair(List<String> englishWords, List<String> chichewaWords, TextView targetTextView) {
+    private String displayRandomWordPair(List<String> englishWords, List<String> chichewaWords, TextView targetTextView) {
         if (!inGameMode || englishWords.isEmpty() || chichewaWords.isEmpty()) {
             targetTextView.setText("");
             Log.d(TAG, "Word pairs are empty or not in game mode");
-            return;
+            return "";
         }
 
         Random random = new Random();
@@ -305,10 +335,14 @@ public class MainActivity extends AppCompatActivity {
             String wordPair = englishWords.get(randomIndex) + " - " + chichewaWords.get(randomIndex);
             targetTextView.setText(wordPair);
             Log.d(TAG, "Displaying word pair: " + wordPair);
+            // Return the displayed word pair
+            return wordPair;
         } else {
             Log.e(TAG, "Random index is out of bounds");
+            return "";
         }
     }
 }
+
 
 
