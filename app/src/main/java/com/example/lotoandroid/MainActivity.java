@@ -55,12 +55,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Register SensorEventListener for tilt detection
         sensorManager.registerListener(new SensorEventListener() {
-            @Override
             public void onSensorChanged(SensorEvent event) {
                 float zValue = event.values[2];
                 // Check if the phone is tilted downwards (negative z-axis)
                 if (zValue < -9.0f) {
                     onSkip();
+                } else if (zValue > 9.0f) {
+                    // Check if the phone is tilted upwards (positive z-axis)
+                    onSkipUpwards();
                 }
             }
 
@@ -90,6 +92,28 @@ public class MainActivity extends AppCompatActivity {
                 // Load and display the next word pair
                 loadAndDisplayWordPairs(selectedCategory, landscapeWordPairTextView);
             }, 500); // Delay
+        }
+    }
+
+    private void onSkipUpwards() {
+        if (inGameMode) {
+            // Check if landscapeWordPairTextView is not null before using it
+            if (landscapeWordPairTextView != null) {
+                // Show flash card saying "SKIP" for upward tilt
+                landscapeWordPairTextView.setText("SKIP");
+
+                // Log to confirm that "SKIP" is set
+                Log.d(TAG, "Word pair set to SKIP");
+
+                // Delay for a short duration (e.g., 1000 milliseconds) to display "SKIP"
+                gameHandler.postDelayed(() -> {
+                    // Load and display the next word pair
+                    loadAndDisplayWordPairs(selectedCategory, landscapeWordPairTextView);
+                }, 500); // Delay
+            } else {
+                // Log an error if landscapeWordPairTextView is null
+                Log.e(TAG, "landscapeWordPairTextView is null");
+            }
         }
     }
 
