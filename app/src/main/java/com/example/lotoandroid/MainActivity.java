@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private SensorManager sensorManager;
     private Sensor accelerometerSensor;
     private List<String> skippedWords = new ArrayList<>();
+    private boolean hasSkipped = false;
+    private boolean hasDisplayedCorrectMessage = false;
 
     // Declare the SensorEventListener as a member variable
     private SensorEventListener sensorEventListener = new SensorEventListener() {
@@ -116,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onSkip() {
-        if (inGameMode) {
+        if (inGameMode && !hasDisplayedCorrectMessage) {
             // Show flash card saying "Correct" with the style applied
             String correctMessage = getString(R.string.correct_message);
 
@@ -124,11 +126,27 @@ public class MainActivity extends AppCompatActivity {
             SpannableString spannableString = new SpannableString(correctMessage);
             spannableString.setSpan(new TextAppearanceSpan(this, R.style.CorrectMessage), 0, correctMessage.length(), 0);
 
-            // Set the SpannableString to the TextView
-            landscapeWordPairTextView.setText(spannableString);
+            // Log before setting text to check if landscapeWordPairTextView is null
+            Log.d(TAG, "Before setting text. landscapeWordPairTextView is null: " + (landscapeWordPairTextView == null));
 
-            // Log that "Correct" is being displayed
-            Log.d(TAG, "Word pair set to " + correctMessage);
+            // Check if landscapeWordPairTextView is not null before setting text
+            if (landscapeWordPairTextView != null) {
+                // Set the SpannableString to the TextView
+                landscapeWordPairTextView.setText(spannableString);
+
+                // Log that "Correct" is being displayed
+                Log.d(TAG, "Word pair set to " + correctMessage);
+            } else {
+                // Log an error if landscapeWordPairTextView is null
+                Log.e(TAG, "landscapeWordPairTextView is null. Unable to set text.");
+                return; // Exit the method to avoid further execution
+            }
+
+            // Set hasDisplayedCorrectMessage to true to prevent displaying the correct message again until the next round
+            hasDisplayedCorrectMessage = true;
+
+            // Log to check the value of hasDisplayedCorrectMessage
+            Log.d(TAG, "hasDisplayedCorrectMessage is now: " + hasDisplayedCorrectMessage);
 
             // Delay for a short duration
             gameHandler.postDelayed(() -> {
@@ -137,12 +155,18 @@ public class MainActivity extends AppCompatActivity {
 
                 // Log the displayed word pair
                 Log.d(TAG, "Displayed word pair: " + displayedWordPair);
+
+                // Reset hasDisplayedCorrectMessage to allow displaying the correct message in the next round
+                hasDisplayedCorrectMessage = false;
+
+                // Log to check the value of hasDisplayedCorrectMessage after reset
+                Log.d(TAG, "hasDisplayedCorrectMessage reset to: " + hasDisplayedCorrectMessage);
             }, 500); // Delay
         }
     }
 
     private void onSkipUpwards() {
-        if (inGameMode) {
+        if (inGameMode && !hasSkipped) {
             // Check if landscapeWordPairTextView is not null before using it
             if (landscapeWordPairTextView != null) {
                 // Show flash card saying "SKIP" for upward tilt
@@ -157,12 +181,24 @@ public class MainActivity extends AppCompatActivity {
                 // Log to confirm that "SKIP" is set
                 Log.d(TAG, "Word pair set to " + skipMessage);
 
+                // Set hasSkipped to true to prevent further skips until the next round
+                hasSkipped = true;
+
+                // Log to check the value of hasSkipped
+                Log.d(TAG, "hasSkipped is now: " + hasSkipped);
+
                 // Delay for a short duration (e.g., 1000 milliseconds) to display "SKIP"
                 gameHandler.postDelayed(() -> {
                     // Load and display the next word pair
                     String skippedWordPair = loadAndDisplayWordPairs(selectedCategory, landscapeWordPairTextView);
                     // Store the skipped word pair
                     skippedWords.add(skippedWordPair);
+
+                    // Reset hasSkipped to allow the next skip
+                    hasSkipped = false;
+
+                    // Log to check the value of hasSkipped after reset
+                    Log.d(TAG, "hasSkipped reset to: " + hasSkipped);
                 }, 500); // Delay
             } else {
                 // Log an error if landscapeWordPairTextView is null
@@ -170,8 +206,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-
 
     private void setCategoryImageClickListeners() {
         int orientation = getResources().getConfiguration().orientation;
@@ -312,17 +346,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayGameOverAndReturnToCategorySelection() {
+        Log.d(TAG, "Entering displayGameOverAndReturnToCategorySelection");
+
         // Display "Game Over" using the string resource
         landscapeWordPairTextView.setText(R.string.game_over);
+
+        Log.d(TAG, "Game Over message set");
 
         // Unregister the SensorEventListener to stop tilt detection
         if (sensorManager != null) {
             sensorManager.unregisterListener(sensorEventListener);
+            Log.d(TAG, "SensorEventListener unregistered");
+        } else {
+            Log.e(TAG, "SensorManager is null");
         }
 
         // Display skipped words for 8 seconds
         if (!skippedWords.isEmpty()) {
             gameHandler.postDelayed(() -> {
+                Log.d(TAG, "Displaying skipped words");
+
                 // Concatenate all skipped words into a single string
                 StringBuilder skippedWordsText = new StringBuilder();
                 for (String skippedWord : skippedWords) {
@@ -331,29 +374,37 @@ public class MainActivity extends AppCompatActivity {
 
                 // Display all skipped words at once
                 landscapeWordPairTextView.setText(skippedWordsText.toString());
+                Log.d(TAG, "Skipped words displayed");
 
                 // Delay for a moment before resetting the game and returning to category selection
                 gameHandler.postDelayed(() -> {
+                    Log.d(TAG, "Resetting and starting new game");
+
                     // Reset the game and start a new one
                     resetAndStartNewGame();
 
                     // Transition back to category selection
                     Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
+                    Log.d(TAG, "Returning to category selection");
                 }, 10000); // Delay for 10 seconds before returning to category selection
             }, 2000); // Delay for 8 seconds before displaying skipped words
         } else {
             // No skipped words, reset the game and start a new one
             gameHandler.postDelayed(() -> {
+                Log.d(TAG, "Resetting and starting new game (no skipped words)");
+
                 resetAndStartNewGame();
 
                 // Transition back to category selection
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
+                Log.d(TAG, "Returning to category selection");
             }, 10000); // Delay for 10 seconds before returning to category selection
         }
-    }
 
+        Log.d(TAG, "Exiting displayGameOverAndReturnToCategorySelection");
+    }
     private void loadWordsForCategory(String category, List<String> englishWords, List<String> chichewaWords) {
         try {
             String fileName = category + ".txt";
