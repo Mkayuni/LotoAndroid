@@ -10,10 +10,17 @@
     tools:context=".LOTO">
 
     <!-- ImageView for Common Phrases with Click Listener -->
+    <Button
+        android:id="@+id/quitGameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="quitGame"
+        android:text="Quit Game" />
+
     <ImageView
         android:id="@+id/categoryImageCommonPhrases"
-        android:layout_width="223dp"
-        android:layout_height="249dp"
+        android:layout_width="190dp"
+        android:layout_height="129dp"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
         android:contentDescription="@string/common_phrases_image_content_description"
@@ -23,21 +30,22 @@
     <!-- ImageView for Common Words with Click Listener -->
 
     <!-- ImageView for Animals with Click Listener -->
+
     <ImageView
         android:id="@+id/categoryImageCommonWords"
-        android:layout_width="215dp"
-        android:layout_height="253dp"
+        android:layout_width="168dp"
+        android:layout_height="168dp"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/common_words_image_content_description"
         android:scaleType="centerInside"
         android:src="@drawable/common_words_image" />
 
-    <!-- TextView for the message -->
+    <!-- ImageView for Animals with Click Listener -->
     <ImageView
         android:id="@+id/categoryImageAnimals"
-        android:layout_width="228dp"
-        android:layout_height="182dp"
+        android:layout_width="144dp"
+        android:layout_height="171dp"
         android:layout_gravity="center"
         android:layout_marginTop="12dp"
         android:contentDescription="@string/animals_image_content_description"
@@ -62,6 +70,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal">
+
         <TextView
             android:id="@+id/wordPairTextView"
             android:layout_width="wrap_content"
@@ -71,5 +80,7 @@
             android:textColor="@color/black"
             android:textSize="24sp"
             android:visibility="invisible" />
+
     </LinearLayout>
+
 </LinearLayout>

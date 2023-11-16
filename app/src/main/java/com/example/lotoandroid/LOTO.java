@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.pm.ActivityInfo;
+import androidx.appcompat.app.AlertDialog;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -157,6 +158,21 @@ public class LOTO extends AppCompatActivity {
             }
         };
         gameHandler.postDelayed(countdownRunnable, 1000);
+    }
+
+    public void quitGame(View view) {
+        // Show a confirmation dialog to confirm quitting the game
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to quit the game?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    // User confirmed, exit the entire app
+                    finish();
+                    System.exit(0); // Add this line to exit the app
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    // User canceled, do nothing or provide additional logic
+                })
+                .show();
     }
 
     private void loadAndDisplayWordPairs(String category, TextView targetTextView) {

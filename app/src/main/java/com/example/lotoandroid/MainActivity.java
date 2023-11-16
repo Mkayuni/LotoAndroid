@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.widget.LinearLayout;
+import androidx.appcompat.app.AlertDialog;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,12 +45,12 @@ public class MainActivity extends AppCompatActivity {
     private TextView countdownTextView;
     private Runnable countdownRunnable; // Variable to track countdown
     MediaPlayer tickPlayer;
-    private Button skipButton;
     private SensorManager sensorManager;
     private Sensor accelerometerSensor;
     private List<String> skippedWords = new ArrayList<>();
     private boolean hasSkipped = false;
     private boolean hasDisplayedCorrectMessage = false;
+    private boolean isClickListenerEnabled = true;
 
     // Declare the SensorEventListener as a member variable
     private SensorEventListener sensorEventListener = new SensorEventListener() {
@@ -118,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onSkip() {
-        if (inGameMode && !hasDisplayedCorrectMessage) {
+        if (inGameMode && !hasDisplayedCorrectMessage && isClickListenerEnabled) {
             // Show flash card saying "Correct" with the style applied
             String correctMessage = getString(R.string.correct_message);
 
@@ -166,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onSkipUpwards() {
-        if (inGameMode && !hasSkipped) {
+        if (inGameMode && !hasSkipped && isClickListenerEnabled) {
             // Check if landscapeWordPairTextView is not null before using it
             if (landscapeWordPairTextView != null) {
                 // Show flash card saying "SKIP" for upward tilt
@@ -215,21 +216,33 @@ public class MainActivity extends AppCompatActivity {
             ImageView animalsImage = findViewById(R.id.categoryImageAnimals);
 
             if (commonPhrasesImage != null) {
-                commonPhrasesImage.setOnClickListener(view -> onCategoryImageClick("Common Phrases"));
+                commonPhrasesImage.setOnClickListener(view -> {
+                    if (isClickListenerEnabled) {
+                        onCategoryImageClick("Common Phrases");
+                    }
+                });
             }
 
             if (commonWordsImage != null) {
-                commonWordsImage.setOnClickListener(view -> onCategoryImageClick("Common Words"));
+                commonWordsImage.setOnClickListener(view -> {
+                    if (isClickListenerEnabled) {
+                        onCategoryImageClick("Common Words");
+                    }
+                });
             }
 
             if (animalsImage != null) {
-                animalsImage.setOnClickListener(view -> onCategoryImageClick("Animals"));
+                animalsImage.setOnClickListener(view -> {
+                    if (isClickListenerEnabled) {
+                        onCategoryImageClick("Animals");
+                    }
+                });
             }
         }
     }
 
     private void onCategoryImageClick(String category) {
-        if (inGameMode) {
+        if (inGameMode && isClickListenerEnabled) {
             resetAndStartNewGame();
         }
 
@@ -385,7 +398,9 @@ public class MainActivity extends AppCompatActivity {
 
                     // Transition back to category selection
                     Intent intent = new Intent(this, MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
+                    finish(); // Finish the current activity
                     Log.d(TAG, "Returning to category selection");
                 }, 10000); // Delay for 10 seconds before returning to category selection
             }, 2000); // Delay for 8 seconds before displaying skipped words
@@ -428,6 +443,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void quitGame(View view) {
+        // Show a confirmation dialog to confirm quitting the game
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to quit the game?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    // User confirmed, exit the entire app
+                    finish();
+                    System.exit(0); // Add this line to exit the app
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    // User canceled, do nothing or provide additional logic
+                })
+                .show();
+    }
     private String displayRandomWordPair(List<String> englishWords, List<String> chichewaWords, TextView targetTextView) {
         if (!inGameMode || englishWords.isEmpty() || chichewaWords.isEmpty()) {
             targetTextView.setText("");
@@ -450,6 +479,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-
-
 
