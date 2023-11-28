@@ -11,6 +11,9 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.widget.LinearLayout;
 import androidx.appcompat.app.AlertDialog;
+import android.view.Gravity;
+import android.view.WindowManager;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -51,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean hasSkipped = false;
     private boolean hasDisplayedCorrectMessage = false;
     private boolean isClickListenerEnabled = true;
+    private int correctWordCount = 0;
 
     // Declare the SensorEventListener as a member variable
     private SensorEventListener sensorEventListener = new SensorEventListener() {
@@ -120,6 +124,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSkip() {
         if (inGameMode && !hasDisplayedCorrectMessage && isClickListenerEnabled) {
+            // Increment the correct word count
+            correctWordCount++;
+
             // Show flash card saying "Correct" with the style applied
             String correctMessage = getString(R.string.correct_message);
 
@@ -374,36 +381,32 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "SensorManager is null");
         }
 
+        // Display correct word count
+        String correctWordsCountText = "Correct Words: " + correctWordCount;
+        landscapeWordPairTextView.append("\n\n" + correctWordsCountText);
+
         // Display skipped words for 8 seconds
         if (!skippedWords.isEmpty()) {
+            // Concatenate title and skipped words into a single string
+            StringBuilder missedWordsText = new StringBuilder("Missed Words\n");
+            for (String skippedWord : skippedWords) {
+                missedWordsText.append(skippedWord).append("\n");
+            }
+
+            // Display all missed words at once
+            landscapeWordPairTextView.append("\n\n" + missedWordsText.toString());
+            Log.d(TAG, "Missed words displayed");
+
+            // Delay for a moment before resetting the game and returning to category selection
             gameHandler.postDelayed(() -> {
-                Log.d(TAG, "Displaying skipped words");
+                Log.d(TAG, "Resetting and starting new game");
 
-                // Concatenate all skipped words into a single string
-                StringBuilder skippedWordsText = new StringBuilder();
-                for (String skippedWord : skippedWords) {
-                    skippedWordsText.append(skippedWord).append("\n");
-                }
+                // Reset the game
+                resetAndStartNewGame();
 
-                // Display all skipped words at once
-                landscapeWordPairTextView.setText(skippedWordsText.toString());
-                Log.d(TAG, "Skipped words displayed");
-
-                // Delay for a moment before resetting the game and returning to category selection
-                gameHandler.postDelayed(() -> {
-                    Log.d(TAG, "Resetting and starting new game");
-
-                    // Reset the game and start a new one
-                    resetAndStartNewGame();
-
-                    // Transition back to category selection
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish(); // Finish the current activity
-                    Log.d(TAG, "Returning to category selection");
-                }, 10000); // Delay for 10 seconds before returning to category selection
-            }, 2000); // Delay for 8 seconds before displaying skipped words
+                // Build and show the AlertDialog
+                showReturnToCategoryPrompt();
+            }, 10000); // Delay for 10 seconds before showing the prompt
         } else {
             // No skipped words, reset the game and start a new one
             gameHandler.postDelayed(() -> {
@@ -415,7 +418,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 Log.d(TAG, "Returning to category selection");
-            }, 10000); // Delay for 10 seconds before returning to category selection
+            }, 5000); // Delay for 10 seconds before returning to category selection
         }
 
         Log.d(TAG, "Exiting displayGameOverAndReturnToCategorySelection");
@@ -441,6 +444,33 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.e(TAG, "Error loading words for category " + category + ": " + e.getMessage());
         }
+    }
+
+    private void showReturnToCategoryPrompt() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Return to category selection?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    // User wants to return to category selection immediately
+                    returnToCategorySelection();
+                })
+                .setCancelable(false); // User must choose an option
+
+        AlertDialog dialog = builder.create();
+
+        // Set dialog window parameters to position it at the top
+        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        params.gravity = Gravity.TOP;
+
+        dialog.show();
+    }
+
+    private void returnToCategorySelection() {
+        // Transition back to category selection
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish(); // Finish the current activity
+        Log.d(TAG, "Returning to category selection");
     }
 
     public void quitGame(View view) {

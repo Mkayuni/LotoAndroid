@@ -26,7 +26,7 @@
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme"
             android:exported="true"
-            android:screenOrientation="sensorPortrait">
+            android:screenOrientation="portrait">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,15 +34,20 @@
             </intent-filter>
         </activity>
 
+        <!-- MainActivity -->
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="sensorPortrait">
-        </activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:screenOrientation="portrait"/>
 
-        <!-- Add a new activity for the LOTO activity -->
+        <activity
+            android:name=".LandscapeActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="landscape" />
+
+        <!-- LOTO Activity -->
         <activity
             android:name=".LOTO"/>
-
 
     </application>
 </manifest>
