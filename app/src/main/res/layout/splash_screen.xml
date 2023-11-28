@@ -7,10 +7,10 @@
     <!-- Use your app's image as the splash screen background -->
     <ImageView
         android:id="@+id/splashImage"
-        android:layout_width="337dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/splash_image_description"
-        android:src="@drawable/splash_background" />
+        android:src="@drawable/wall2" />
 
     <!-- You can add a loading progress bar or text if needed -->
 </RelativeLayout>
