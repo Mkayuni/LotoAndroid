@@ -337,8 +337,9 @@ public class MainActivity extends AppCompatActivity {
                     playTickPlayer();
 
                     // Check if there are 5 seconds or less left
-                    if (countdownSeconds <= 5) {
-                        speedUpTickPlayer();
+                    if (countdownSeconds == 3) {
+                        // Switch to a different sound file at 3 seconds
+                        playDifferentSoundFile();
                     }
                 }
             }
@@ -361,9 +362,32 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void speedUpTickPlayer() {
-        playTickPlayer();
+    private void playDifferentSoundFile() {
+        Log.d(TAG, "Playing a different sound file");
+        // Stop the current player
+        stopTickPlayer();
+
+        // Initialize and play a different sound file
+        // Replace "yourDifferentSoundFile" with the appropriate resource/file
+        MediaPlayer differentPlayer = MediaPlayer.create(this, R.raw.ticktoc2);
+
+        if (differentPlayer != null) {
+            differentPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    mediaPlayer.release();
+                    // Resume the original tick player
+                    playTickPlayer();
+                }
+            });
+
+            differentPlayer.start();
+        } else {
+            Log.e(TAG, "Failed to create MediaPlayer for ticktoc2");
+            // Handle the error, perhaps by using a default sound or notifying the user
+        }
     }
+
 
     private void displayGameOverAndReturnToCategorySelection() {
         Log.d(TAG, "Entering displayGameOverAndReturnToCategorySelection");
@@ -478,9 +502,8 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to quit the game?")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    // User confirmed, exit the entire app
-                    finish();
-                    System.exit(0); // Add this line to exit the app
+                    // User confirmed, finish all activities and exit the app
+                    finishAffinity();
                 })
                 .setNegativeButton("No", (dialog, which) -> {
                     // User canceled, do nothing or provide additional logic
