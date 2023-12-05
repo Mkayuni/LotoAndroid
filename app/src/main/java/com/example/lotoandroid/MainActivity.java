@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AlertDialog;
 import android.view.Gravity;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 
 import java.io.BufferedReader;
@@ -24,14 +26,12 @@ import java.util.List;
 import java.util.Random;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.widget.Button;
 import android.view.View;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import androidx.core.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
 public class MainActivity extends AppCompatActivity {
@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
             // Log an error if either sensorManager or accelerometerSensor is null
             Log.e(TAG, "SensorManager or accelerometerSensor is null");
         }
+
 
         gameHandler = new Handler();
         wordPairTextView = findViewById(R.id.wordPairTextView);
@@ -260,12 +261,26 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "Orientation: " + orientation);
 
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            // Show the prompt layout
-            Log.d(TAG, "Switching to prompt layout");
+            // Show the prompt layout with fade-in animation
+            Log.d(TAG, "Switching to prompt layout with fade-in animation");
             setContentView(R.layout.prompt_layout);
 
+            // Get the root layout for the animation
+            View rootView = findViewById(android.R.id.content);
+
+            // Load the fade-in animation
+            Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_image);
+
+            // Apply the animation to the root layout
+            rootView.startAnimation(fadeInAnimation);
+
+            // Apply rotation and fade animations to the clicked images
+            applyImageAnimation(R.id.categoryImageCommonPhrases, R.anim.rotate_and_fade);
+            applyImageAnimation(R.id.categoryImageCommonWords, R.anim.rotate_and_fade);
+            applyImageAnimation(R.id.categoryImageAnimals, R.anim.rotate_and_fade);
+
             // Listen for a click on the prompt layout
-            findViewById(android.R.id.content).setOnClickListener(new View.OnClickListener() {
+            rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // User acknowledged the prompt, switch to the landscape layout
@@ -277,6 +292,14 @@ public class MainActivity extends AppCompatActivity {
             // Device is already in landscape mode or using a layout that works in portrait
             Log.d(TAG, "Switching directly to landscape layout");
             switchToLandscapeLayout();
+        }
+    }
+
+    private void applyImageAnimation(int imageId, int animationId) {
+        ImageView imageView = findViewById(imageId);
+        if (imageView != null) {
+            Animation imageAnimation = AnimationUtils.loadAnimation(this, animationId);
+            imageView.startAnimation(imageAnimation);
         }
     }
 
@@ -504,6 +527,7 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", (dialog, which) -> {
                     // User confirmed, finish all activities and exit the app
                     finishAffinity();
+                    System.exit(0);
                 })
                 .setNegativeButton("No", (dialog, which) -> {
                     // User canceled, do nothing or provide additional logic
