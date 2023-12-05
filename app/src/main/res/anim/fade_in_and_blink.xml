@@ -1,0 +1,5 @@
+<!-- res/anim/fade_in_and_blink.xml -->
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <include android:animation="@anim/fade_in" />
+    <include android:animation="@anim/blink" />
+</set>

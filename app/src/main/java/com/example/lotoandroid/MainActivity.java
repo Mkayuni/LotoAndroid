@@ -34,6 +34,10 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
+import android.animation.ObjectAnimator;
+import android.view.animation.LinearInterpolator;
+
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
@@ -55,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean hasDisplayedCorrectMessage = false;
     private boolean isClickListenerEnabled = true;
     private int correctWordCount = 0;
+    private static final int ANIMATION_FADE_BLINK = R.anim.fade_blink;
+
 
     // Declare the SensorEventListener as a member variable
     private SensorEventListener sensorEventListener = new SensorEventListener() {
@@ -99,9 +105,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loto);
 
+
+        // Start the blinking animation for each category
+        startBlinkAnimationForCategory("Common Phrases");
+        startBlinkAnimationForCategory("Common Words");
+        startBlinkAnimationForCategory("Animals");
+
         // Initialize SensorManager and accelerometerSensor
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        landscapeWordPairTextView = findViewById(R.id.landscapeWordPairTextView);
+
 
         if (sensorManager != null && accelerometerSensor != null) {
             // Register SensorEventListener for tilt detection
@@ -216,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     private void setCategoryImageClickListeners() {
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -269,15 +285,18 @@ public class MainActivity extends AppCompatActivity {
             View rootView = findViewById(android.R.id.content);
 
             // Load the fade-in animation
-            Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_image);
+            Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in);
 
             // Apply the animation to the root layout
             rootView.startAnimation(fadeInAnimation);
 
             // Apply rotation and fade animations to the clicked images
-            applyImageAnimation(R.id.categoryImageCommonPhrases, R.anim.rotate_and_fade);
-            applyImageAnimation(R.id.categoryImageCommonWords, R.anim.rotate_and_fade);
-            applyImageAnimation(R.id.categoryImageAnimals, R.anim.rotate_and_fade);
+            applyImageAnimation(R.id.categoryImageCommonPhrases, R.anim.blink);
+            applyImageAnimation(R.id.categoryImageCommonWords, R.anim.blink);
+            applyImageAnimation(R.id.categoryImageAnimals, R.anim.blink);
+
+            // Start the blinking animation for the selected category
+            startBlinkAnimationForCategory(category);
 
             // Listen for a click on the prompt layout
             rootView.setOnClickListener(new View.OnClickListener() {
@@ -295,11 +314,50 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Method to start the blinking animation for a specific category
+    private void startBlinkAnimationForCategory(String category) {
+        int animationId = R.anim.fade_blink;
+
+        switch (category) {
+            case "Common Phrases":
+                applyImageAnimation(R.id.categoryImageCommonPhrases, animationId);
+                break;
+            case "Common Words":
+                applyImageAnimation(R.id.categoryImageCommonWords, animationId);
+                break;
+            case "Animals":
+                applyImageAnimation(R.id.categoryImageAnimals, animationId);
+                break;
+            // Add more cases for other categories if needed
+        }
+    }
+
     private void applyImageAnimation(int imageId, int animationId) {
         ImageView imageView = findViewById(imageId);
         if (imageView != null) {
+            Log.d(TAG, "Applying animation to ImageView: " + imageId);
+
             Animation imageAnimation = AnimationUtils.loadAnimation(this, animationId);
+            imageAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    Log.d(TAG, "Animation started");
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    Log.d(TAG, "Animation ended");
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    Log.d(TAG, "Animation repeated");
+                }
+            });
+
             imageView.startAnimation(imageAnimation);
+        } else {
+            Log.e(TAG, "ImageView is null. Cannot apply animation.");
         }
     }
 
@@ -384,6 +442,7 @@ public class MainActivity extends AppCompatActivity {
             tickPlayer = null;
         }
     }
+
 
     private void playDifferentSoundFile() {
         Log.d(TAG, "Playing a different sound file");

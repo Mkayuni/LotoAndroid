@@ -1,0 +1,10 @@
+<!-- res/anim/rotate_background.xml -->
+<rotate
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromDegrees="0"
+    android:toDegrees="360"
+    android:pivotX="50%"
+    android:pivotY="50%"
+    android:repeatCount="infinite"
+    android:duration="5000"
+    android:interpolator="@android:anim/accelerate_decelerate_interpolator" />

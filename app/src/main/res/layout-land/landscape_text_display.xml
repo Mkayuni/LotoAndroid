@@ -13,14 +13,14 @@
         android:layout_centerVertical="true">
 
         <TextView
-            android:id="@+id/landscapeWordPairTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="34sp"
-            android:textStyle="bold"
-            />
+        android:id="@+id/landscapeWordPairTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        android:text="Your Text" />
 
         <!-- Countdown TextView to display the remaining time -->
         <TextView

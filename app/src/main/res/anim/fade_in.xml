@@ -1,0 +1,24 @@
+<!-- res/anim/fade_blink.xml -->
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <alpha
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0"
+        android:duration="500" />
+    <alpha
+        android:fromAlpha="1.0"
+        android:toAlpha="0.0"
+        android:duration="500"
+        android:startOffset="500" />
+    <set android:interpolator="@android:anim/linear_interpolator"
+        android:repeatCount="-1">
+        <alpha
+            android:fromAlpha="0.0"
+            android:toAlpha="1.0"
+            android:duration="500" />
+        <alpha
+            android:fromAlpha="1.0"
+            android:toAlpha="0.0"
+            android:duration="500"
+            android:startOffset="500" />
+    </set>
+</set>

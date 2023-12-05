@@ -21,7 +21,7 @@
             android:textColor="@color/white"
             android:textSize="34sp"
             android:textStyle="bold"
-            />
+            android:visibility="visible" />
 
         <!-- Countdown TextView to display the remaining time -->
         <TextView
