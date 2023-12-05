@@ -443,6 +443,34 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void applyBlinkAnimation(int imageId) {
+        ImageView imageView = findViewById(imageId);
+        if (imageView != null) {
+            Log.d(TAG, "Applying blink animation to ImageView: " + imageId);
+
+            Animation blinkAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_blink);
+            blinkAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    Log.d(TAG, "Blink animation started");
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    Log.d(TAG, "Blink animation ended");
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    Log.d(TAG, "Blink animation repeated");
+                }
+            });
+
+            imageView.startAnimation(blinkAnimation);
+        } else {
+            Log.e(TAG, "ImageView is null. Cannot apply blink animation.");
+        }
+    }
 
     private void playDifferentSoundFile() {
         Log.d(TAG, "Playing a different sound file");
