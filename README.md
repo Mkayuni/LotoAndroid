@@ -34,6 +34,25 @@
   - Introduction of audio cues, such as the tick-tock sound, enhancing gameplay immersion.
   - Organized code structure ensures efficient management of correct and skipped words.
 
+## How the Game Works
+
+- **Phone Placement:**
+  - Place the phone on your head after selecting a category.
+
+- **Countdown Timer:**
+  - A 30-second countdown starts; make as many guesses as possible.
+
+- **Tilt Controls:**
+  - **Upward Tilt:** Skip to the next word if unsure of the Chichewa translation.
+  - **Downward Tilt:** Confirm a correct guess and move to the next word pair.
+
+- **End of Round:**
+  - After the countdown, see the count of correct and missed word pairs.
+
+- **Review and Options:**
+  - Review correct and missed words.
+  - Choose to return to category selection, play again, or pass to another player.
+
 ## Technology Stack
 
 - **Programming Language:** Java, chosen for its object-oriented nature, platform independence, and strong developer support.
@@ -63,5 +82,5 @@
 - **Collaborative Gameplay Features:** Introduce features that enable users to learn collaboratively.
 - **Single Player Mode:** Enhance the app with a dedicated single-player mode for individual learning.
 - **Adaptive Learning Algorithms:** Implement algorithms that adapt to users' progress for a personalized learning journey.
-  
+
 These improvements aim to further tailor LotaMalawi to the diverse needs of users, creating a more engaging and effective language learning experience.
