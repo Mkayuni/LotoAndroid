@@ -6,7 +6,7 @@
 [![Status](https://img.shields.io/badge/Status-Beta-yellow.svg)]()
 
 <p align="center">
-  <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" alt="LotaMalawi Logo" width="200"/>
+  <img src="https://github.com/user-attachments/assets/[your-unique-image-id]" alt="LotaMalawi Logo" width="200"/>
 </p>
 
 ## Overview
