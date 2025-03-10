@@ -9,6 +9,14 @@
   <img src="https://github.com/user-attachments/assets/c7b49200-b62a-49b7-b769-1f22bcd8b7f8" alt="LotaMalawi Logo" width="200"/>
 </p>
 
+## App Screenshots
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b9901fd9-447b-495f-bd5f-f0ff75391e8f" alt="Category Selection Screen" width="250"/>
+  <img src="https://github.com/user-attachments/assets/633e4fae-1e4b-42c8-92c1-bba3b417cbab" alt="Gameplay Screen" width="250"/>
+  <img src="https://github.com/user-attachments/assets/e2805735-6c64-4f8b-8f86-7ce5e0432842" alt="Results Screen" width="250"/>
+</p>
+
 ## Overview
 
 LotaMalawi is an innovative Android application designed to facilitate the learning of Chichewa, one of Malawi's official languages, through an interactive and gamified experience. Inspired by the popular "Heads Up!" game format, LotaMalawi transforms language acquisition into an engaging activity that can be enjoyed individually or in social settings.
